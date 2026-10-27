@@ -15,13 +15,13 @@ export const Footer: React.FC = () => {
 
   return (
     <footer className="relative bg-[#020617] border-t border-[#38BDF8]/20 pt-16 pb-8 overflow-hidden z-10">
-      
+
       {/* Animated Wave Top Divider */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#38BDF8] to-transparent shadow-[0_0_15px_#38BDF8]" />
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-slate-800 text-center md:text-left">
-          
+
           {/* Brand Info */}
           <div className="md:col-span-5 flex flex-col items-center md:items-start">
             <div
@@ -36,7 +36,7 @@ export const Footer: React.FC = () => {
                   P. Moneesh Raj
                 </h3>
                 <p className="text-xs text-[#38BDF8] tracking-widest uppercase">
-                  3D AI &amp; DATA PORTFOLIO
+                  AI &amp; DATA PORTFOLIO
                 </p>
               </div>
             </div>

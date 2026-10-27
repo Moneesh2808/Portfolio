@@ -9,7 +9,6 @@ import {
   GraduationCap,
   Award,
   Trophy,
-  FileText,
   Mail,
   Menu,
   X,
@@ -24,7 +23,6 @@ const navItems = [
   { id: 'education',     label: 'Education',     icon: GraduationCap },
   { id: 'certifications',label: 'Certs',         icon: Award },
   { id: 'achievements',  label: 'Achievements',  icon: Trophy },
-  { id: 'resume',        label: 'Resume',        icon: FileText },
   { id: 'contact',       label: 'Contact',       icon: Mail },
 ];
 

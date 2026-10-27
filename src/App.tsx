@@ -11,7 +11,7 @@ import { Experience } from './components/Experience/Experience';
 import { Education } from './components/Education/Education';
 import { Certificates } from './components/Certificates/Certificates';
 import { Achievements } from './components/Achievements/Achievements';
-import { ResumeViewer } from './components/Resume/ResumeViewer';
+
 import { Contact } from './components/Contact/Contact';
 import { Footer } from './components/Footer/Footer';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -76,8 +76,6 @@ export function App() {
         <div className="section-divider my-2" />
         <ErrorBoundary><Achievements /></ErrorBoundary>
 
-        <div className="section-divider my-2" />
-        <ErrorBoundary><ResumeViewer /></ErrorBoundary>
 
         <div className="section-divider my-2" />
         <ErrorBoundary><Contact /></ErrorBoundary>
