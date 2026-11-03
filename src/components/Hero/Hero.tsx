@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { TypeAnimation } from 'react-type-animation';
 import {
@@ -9,6 +9,17 @@ import { Hero3DScene } from './Hero3DScene';
 import { downloadResumePDF } from '../../utils/downloadResume';
 
 export const Hero: React.FC = () => {
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    try {
+      setDownloading(true);
+      await downloadResumePDF();
+    } finally {
+      setTimeout(() => setDownloading(false), 1200);
+    }
+  };
+
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
@@ -74,11 +85,12 @@ export const Hero: React.FC = () => {
               <motion.button
                 whileHover={{ scale: 1.06, boxShadow: '0 0 28px #38BDF8' }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => downloadResumePDF()}
-                className="flex items-center gap-2.5 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#2563EB] to-[#38BDF8] text-white font-bold text-sm shadow-[0_4px_20px_rgba(37,99,235,0.45)] transition-all cursor-pointer"
+                onClick={handleDownload}
+                disabled={downloading}
+                className="flex items-center gap-2.5 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#2563EB] to-[#38BDF8] text-white font-bold text-sm shadow-[0_4px_20px_rgba(37,99,235,0.45)] transition-all cursor-pointer disabled:opacity-80"
               >
-                <Download className="w-4 h-4" />
-                Download Resume
+                <Download className={`w-4 h-4 ${downloading ? 'animate-bounce' : ''}`} />
+                {downloading ? 'Downloading...' : 'Download Resume'}
               </motion.button>
 
               <motion.button

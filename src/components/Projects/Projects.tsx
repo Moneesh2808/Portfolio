@@ -11,6 +11,28 @@ import type { ProjectData } from './ProjectModal';
 
 const projectsData: ProjectData[] = [
   {
+    id: 'enterprise-knowledge-intelligence',
+    title: 'Enterprise Knowledge Intelligence: An AI-Powered RAG Assistant',
+    category: 'GenAI & RAG Architecture',
+    description: 'AI-powered knowledge management application designed to efficiently search, analyze, and retrieve information from organizational documents using Retrieval-Augmented Generation (RAG).',
+    image: '/images/projects/rag-intelligence.jpg',
+    techStack: ['React.js', 'TypeScript', 'Tailwind CSS', 'Python', 'FastAPI', 'PostgreSQL', 'pgvector', 'LLMs', 'RAG', 'Google Auth'],
+    githubUrl: 'https://github.com/Moneesh2808',
+    liveUrl: 'https://github.com/Moneesh2808',
+    overview: 'Enterprise Knowledge Intelligence is an AI-powered knowledge management application designed to help users efficiently search, analyze, and retrieve information from organizational documents using Retrieval-Augmented Generation (RAG). The project integrates React.js, TypeScript, and Tailwind CSS for a responsive frontend, with Python and FastAPI for backend development and PostgreSQL with pgvector for data storage and semantic search.',
+    problemStatement: 'Unstructured organizational documents (PDFs, reports, manuals) are difficult to navigate and search efficiently. Traditional search mechanisms lack semantic context and LLMs alone may hallucinate without verifiable document citations.',
+    architecture: 'Modular decoupled architecture featuring a modern React.js + TypeScript frontend, high-speed Python FastAPI backend, PostgreSQL with pgvector extension for high-dimensional vector embeddings, and LLM orchestration with verified source citation generation.',
+    features: [
+      'Document upload, text extraction, chunking & embedding generation',
+      'PostgreSQL with pgvector for high-speed semantic vector similarity search',
+      'Context-aware question answering using LLMs with explicit source citations',
+      'Secure user registration, login & Google OAuth authentication',
+      'Persistent chat history and interactive document management',
+      'Interactive analytics dashboards and granular user profile settings',
+      'Transforms unstructured documents into searchable, evidence-based knowledge',
+    ],
+  },
+  {
     id: 'house-price',
     title: 'House Price Prediction Web Application',
     category: 'Machine Learning & Flask',

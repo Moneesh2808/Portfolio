@@ -25,61 +25,80 @@ const fetchImageElement = (url: string): Promise<HTMLImageElement> => {
 };
 
 /**
- * Draws an image onto a canvas and returns a JPEG data-URL.
- * Ensures the image fills the full A4 canvas with white background.
+ * Downloads the resume as a PDF file in the local system named Resume.pdf.
+ * Prioritizes direct download of the pre-rendered high-definition A4 PDF file,
+ * and falls back seamlessly to dynamic client-side jsPDF generation.
  */
-const imageToDataURL = (img: HTMLImageElement): string => {
-  const A4_W = 2480; // px at 300 dpi
-  const A4_H = 3508;
-  const canvas = document.createElement('canvas');
-  canvas.width = A4_W;
-  canvas.height = A4_H;
-  const ctx = canvas.getContext('2d')!;
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, A4_W, A4_H);
-  ctx.drawImage(img, 0, 0, A4_W, A4_H);
-  return canvas.toDataURL('image/jpeg', 0.95);
-};
-
 export const downloadResumePDF = async (): Promise<boolean> => {
+  // Primary Strategy: Direct download of pre-generated A4 PDF
+  const pdfPaths = ['/Resume.pdf', '/P_Moneesh_Raj_Resume.pdf'];
+
+  for (const pdfPath of pdfPaths) {
+    try {
+      const res = await fetch(pdfPath);
+      if (res.ok) {
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = 'Resume.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 3000);
+        return true;
+      }
+    } catch {
+      // Continue to next strategy if fetch fails
+    }
+  }
+
+  // Fallback Strategy: Dynamic jsPDF generation from the exact resume image
   try {
-    // Load both pages in parallel using fetch (no CORS issues)
-    const [img1, img2] = await Promise.all([
-      fetchImageElement('/images/resume_page1.jpg'),
-      fetchImageElement('/images/resume_page2.jpg'),
-    ]);
+    const img = await fetchImageElement('/images/resume_page1.jpg');
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4', compress: true });
+    const pageWidth = pdf.internal.pageSize.getWidth(); // 210 mm
+    const pageHeight = pdf.internal.pageSize.getHeight(); // 297 mm
 
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const W = pdf.internal.pageSize.getWidth();   // 210 mm
-    const H = pdf.internal.pageSize.getHeight();  // 297 mm
+    // Compute proportional dimensions preserving exact aspect ratio
+    const imgAspect = (img.naturalHeight || img.height) / (img.naturalWidth || img.width);
+    let renderW = pageWidth;
+    let renderH = pageWidth * imgAspect;
+    if (renderH > pageHeight) {
+      renderH = pageHeight;
+      renderW = pageHeight / imgAspect;
+    }
+    const xOffset = (pageWidth - renderW) / 2;
+    const yOffset = (pageHeight - renderH) / 2;
 
-    // Page 1
-    const data1 = imageToDataURL(img1);
-    pdf.addImage(data1, 'JPEG', 0, 0, W, H, undefined, 'FAST');
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth || img.width || 1200;
+    canvas.height = img.naturalHeight || img.height || 1700;
+    const ctx = canvas.getContext('2d')!;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.98);
 
-    // Page 2
-    pdf.addPage();
-    const data2 = imageToDataURL(img2);
-    pdf.addImage(data2, 'JPEG', 0, 0, W, H, undefined, 'FAST');
-
+    pdf.addImage(dataUrl, 'JPEG', xOffset, yOffset, renderW, renderH, undefined, 'SLOW');
     pdf.save('Resume.pdf');
     return true;
   } catch (error) {
-    console.error('PDF generation failed:', error);
+    console.error('Dynamic PDF generation failed:', error);
 
-    // Hard fallback — directly download page 1 image as PDF via link
+    // Hard fallback: trigger direct anchor link
     try {
-      const res = await fetch('/images/resume_page1.jpg');
-      const blob = await res.blob();
       const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'Resume.jpg';
+      link.href = '/Resume.pdf';
+      link.download = 'Resume.pdf';
+      link.target = '_blank';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    } catch {
-      console.error('Fallback download also failed.');
+      return true;
+    } catch (fallbackErr) {
+      console.error('All resume download mechanisms failed:', fallbackErr);
+      return false;
     }
-    return false;
   }
 };
